@@ -30,7 +30,7 @@ internal class FlickrPresenter {
                     }
 
                     override fun onSubscribe(d: Disposable) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        // NO_OP
                     }
 
                     override fun onError(e: Throwable) {
