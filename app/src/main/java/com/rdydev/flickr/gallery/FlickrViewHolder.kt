@@ -22,6 +22,6 @@ class FlickrViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 .load(item.media.m)
                 .into(image)
 
-        text.setText(item.title)
+        text.text = item.title
     }
 }
