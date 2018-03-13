@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface FlickrContract {
 
     companion object {
-        const val FEED_URL = "/services/feeds/photos_public.gne?format=json&nojsoncallback=true"
+        const val FEED_URL = "/services/feeds/photos_public.gne?format=json&nojsoncallback=1"
     }
 
     @GET(FEED_URL)
