@@ -1,5 +1,7 @@
 package com.rdydev.flickr.gallery
 
+import assertk.assert
+import assertk.assertions.contains
 import com.nhaarman.mockito_kotlin.*
 import com.rdydev.flickr.gallery.data.FlickrApi
 import com.rdydev.flickr.gallery.data.model.FlickrItem
@@ -75,4 +77,37 @@ class FlickrPresenterTest {
         inOrder.verify(view, times(1)).onError(any())
     }
 
+    @Test
+    fun searchShouldFetchNormalDataIfEmpty() {
+        val data = mutableListOf(mock<FlickrItem> {})
+        whenever(flickrApi.getFeed()).thenReturn(Single.just(data))
+        val spy = spy(sut)
+
+        spy.searchTags("")
+
+        verify(spy).fetchData()
+    }
+
+    @Test
+    fun searchShouldAllowValidInput() {
+        val data = mutableListOf(mock<FlickrItem> {})
+        whenever(flickrApi.search(any())).thenReturn(Single.just(data))
+
+        sut.searchTags("android,ios")
+
+        verify(view).onData(any())
+    }
+
+    @Test
+    fun searchShouldNotAllowBadCharacters() {
+        val data = mutableListOf(mock<FlickrItem> {})
+        whenever(flickrApi.search(any())).thenReturn(Single.just(data))
+
+        sut.searchTags("@£$%^&*")
+
+        argumentCaptor<String>().apply {
+            verify(view).onError(capture())
+            assert(firstValue).contains("are accepted")
+        }
+    }
 }
