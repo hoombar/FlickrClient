@@ -15,7 +15,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-class FlickrPresenterIntegrationTest {
+class FlickrDataIntegrationTest {
 
     @Rule
     @JvmField
