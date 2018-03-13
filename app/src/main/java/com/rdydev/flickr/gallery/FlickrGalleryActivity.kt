@@ -8,23 +8,25 @@ import android.support.v7.widget.SearchView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ProgressBar
 import com.rdydev.flickr.gallery.data.model.FlickrItem
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 class FlickrGalleryActivity : Activity(), FlickrView {
     private val TAG = FlickrGalleryActivity::class.java.simpleName
 
-    private lateinit var presenter : FlickrPresenter
-
-    private val adapter = FlickrGalleryAdapter()
     private lateinit var dataContainer: ViewGroup
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar : ProgressBar
     private lateinit var searchText: SearchView
+
+    private lateinit var presenter : FlickrPresenter
+    private val adapter = FlickrGalleryAdapter()
+    private lateinit var searchDisposable : Disposable
+    private val searchPublishSubject: PublishSubject<String> = PublishSubject.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,32 +37,27 @@ class FlickrGalleryActivity : Activity(), FlickrView {
 
         recyclerView.layoutManager = GridLayoutManager(this, 2)
         recyclerView.adapter = adapter
-
-        setupSearch()
     }
 
     private fun setupSearch() {
-        val publishSubject : PublishSubject<String> = PublishSubject.create()
-
         searchText.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                publishSubject.onComplete()
+                searchPublishSubject.onComplete()
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
-                    publishSubject.onNext(newText)
+                    searchPublishSubject.onNext(newText)
                 }
                 return true
             }
         })
 
-        publishSubject
+        searchDisposable = searchPublishSubject
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
                 .map { it.replace(" ", "") }
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ searchString -> presenter.searchTags(searchString) })
     }
@@ -79,7 +76,18 @@ class FlickrGalleryActivity : Activity(), FlickrView {
 
     override fun onResume() {
         super.onResume()
-        presenter.fetchData()
+        setupSearch()
+        if (searchText.query.isNullOrEmpty()) {
+            presenter.fetchData()
+        } else {
+            searchPublishSubject.onNext(searchText.query.toString())
+        }
+    }
+
+    override fun onPause() {
+        searchDisposable.dispose()
+        presenter.unsubscribe()
+        super.onPause()
     }
 
     override fun onData(data: List<FlickrItem>) {
