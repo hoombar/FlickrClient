@@ -21,6 +21,10 @@ class DataModule {
             return FlickrApi(retrofit.create(FlickrContract::class.java))
         }
 
+        fun provideDataSorter(): DataSorter {
+            return DataSorter()
+        }
+
     }
 
 }

@@ -4,6 +4,7 @@ import assertk.assert
 import assertk.assertions.isEqualTo
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
+import com.rdydev.flickr.gallery.data.DataSorter
 import com.rdydev.flickr.gallery.data.FakeFlickrContract
 import com.rdydev.flickr.gallery.data.FlickrApi
 import com.rdydev.flickr.gallery.data.model.FlickrItem
@@ -27,7 +28,7 @@ class FlickrDataIntegrationTest {
     private lateinit var fakeFeed: FakeFlickrContract
 
     private val sut: FlickrPresenter by lazy {
-        FlickrPresenter(view, FlickrApi(fakeFeed))
+        FlickrPresenter(view, FlickrApi(fakeFeed), DataSorter())
     }
 
     @Before

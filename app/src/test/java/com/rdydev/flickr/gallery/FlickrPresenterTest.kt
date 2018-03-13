@@ -3,6 +3,7 @@ package com.rdydev.flickr.gallery
 import assertk.assert
 import assertk.assertions.contains
 import com.nhaarman.mockito_kotlin.*
+import com.rdydev.flickr.gallery.data.DataSorter
 import com.rdydev.flickr.gallery.data.FlickrApi
 import com.rdydev.flickr.gallery.data.model.FlickrItem
 import com.rdydev.flickr.gallery.rules.RxSchedulersRule
@@ -25,7 +26,7 @@ class FlickrPresenterTest {
     private lateinit var view: FlickrView
 
     private val sut: FlickrPresenter by lazy {
-        FlickrPresenter(view, flickrApi)
+        FlickrPresenter(view, flickrApi, DataSorter())
     }
 
     @Before

@@ -33,7 +33,7 @@ class FlickrGalleryActivity : Activity(), FlickrView {
 
         bindViews()
 
-        recyclerView.layoutManager = GridLayoutManager(this, 2)!!
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
         recyclerView.adapter = adapter
 
         setupSearch()

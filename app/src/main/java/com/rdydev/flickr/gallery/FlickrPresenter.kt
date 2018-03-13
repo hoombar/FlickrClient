@@ -1,6 +1,7 @@
 package com.rdydev.flickr.gallery
 
 import com.rdydev.flickr.gallery.data.DataModule
+import com.rdydev.flickr.gallery.data.DataSorter
 import com.rdydev.flickr.gallery.data.FlickrApi
 import com.rdydev.flickr.gallery.data.model.FlickrItem
 import io.reactivex.Single
@@ -11,12 +12,14 @@ internal class FlickrPresenter {
 
     private var view: FlickrView
     private val flickrApi: FlickrApi
+    private val dataSorter: DataSorter
 
-    constructor(view: FlickrView) : this(view, DataModule.provideFlickrApi())
+    constructor(view: FlickrView) : this(view, DataModule.provideFlickrApi(), DataModule.provideDataSorter())
 
-    constructor(view: FlickrView, flickrApi: FlickrApi) {
+    constructor(view: FlickrView, flickrApi: FlickrApi, dataSorter: DataSorter) {
         this.view = view
         this.flickrApi = flickrApi
+        this.dataSorter = dataSorter
     }
 
     fun fetchData() {
@@ -41,12 +44,13 @@ internal class FlickrPresenter {
     }
 
     private fun watch(source: Single<List<FlickrItem>>) {
-        source.subscribeOn(Schedulers.io())
+        source
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { data ->
                             view.hideLoading()
-                            view.onData(data)
+                            view.onData(dataSorter.byDateAscending(data))
                         },
                         { error ->
                             view.hideLoading()
