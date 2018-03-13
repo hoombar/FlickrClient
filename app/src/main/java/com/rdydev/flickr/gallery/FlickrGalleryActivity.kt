@@ -87,7 +87,8 @@ class FlickrGalleryActivity : Activity(), FlickrView {
     }
 
     override fun onError(message: String) {
-        Log.e(TAG, message);
+        // TODO implement user friendly error handling on the UI
+        Log.e(TAG, message)
     }
 
     override fun showLoading() {
