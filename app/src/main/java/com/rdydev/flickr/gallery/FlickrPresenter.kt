@@ -6,7 +6,7 @@ import com.rdydev.flickr.gallery.data.FlickrApi
 import com.rdydev.flickr.gallery.data.model.FlickrItem
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 internal class FlickrPresenter {
@@ -14,7 +14,7 @@ internal class FlickrPresenter {
     private var view: FlickrView
     private val flickrApi: FlickrApi
     private val dataSorter: DataSorter
-    private var disposable : Disposable? = null
+    private val disposable = CompositeDisposable()
 
     constructor(view: FlickrView) : this(view, DataModule.provideFlickrApi(), DataModule.provideDataSorter())
 
@@ -46,23 +46,25 @@ internal class FlickrPresenter {
     }
 
     private fun watch(source: Single<List<FlickrItem>>) {
-        disposable = source
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { data ->
-                            view.hideLoading()
-                            view.onData(dataSorter.byDateAscending(data))
-                        },
-                        { error ->
-                            view.hideLoading()
-                            view.onError(error.localizedMessage)
-                        }
-                )
+        disposable.add(
+                source
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                { data ->
+                                    view.hideLoading()
+                                    view.onData(dataSorter.byDateAscending(data))
+                                },
+                                { error ->
+                                    view.hideLoading()
+                                    view.onError(error.localizedMessage)
+                                }
+                        )
+        )
     }
 
     fun unsubscribe() {
-        disposable?.let { disposable!!.dispose() }
+        disposable.clear()
     }
 
 }
