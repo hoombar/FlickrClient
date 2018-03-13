@@ -15,7 +15,7 @@ class FlickrGalleryAdapter : RecyclerView.Adapter<FlickrViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: FlickrViewHolder, position: Int) {
-        holder.loadData(data.get(position))
+        holder.loadData(data[position])
     }
 
     override fun getItemCount(): Int {
