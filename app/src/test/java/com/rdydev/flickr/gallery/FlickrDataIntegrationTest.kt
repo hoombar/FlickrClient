@@ -46,7 +46,8 @@ class FlickrDataIntegrationTest {
         argumentCaptor<List<FlickrItem>>().apply {
             verify(view).onData(capture())
 
-            assert(firstValue.get(0).title).isEqualTo("2018-03-12_01-01-07")
+            assert(firstValue.get(0).title).isEqualTo("DSC05857.jpg")
+            assert(firstValue.size).isEqualTo(20)
         }
     }
 
