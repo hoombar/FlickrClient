@@ -1,4 +1,4 @@
-package com.rdydev.flickr.gallery
+package com.rdydev.flickr.gallery.rules
 
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
@@ -7,7 +7,7 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-class ImmediateSchedulersRule : TestRule {
+class RxSchedulersRule : TestRule {
 
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {

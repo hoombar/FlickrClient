@@ -21,11 +21,13 @@ internal class FlickrPresenter {
     }
 
     fun fetchData() {
+        view.showLoading()
         flickrApi.getFeed()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : SingleObserver<List<FlickrItem>> {
                     override fun onSuccess(t: List<FlickrItem>) {
+                        view.hideLoading()
                         view.onData(t)
                     }
 
@@ -34,6 +36,7 @@ internal class FlickrPresenter {
                     }
 
                     override fun onError(e: Throwable) {
+                        view.hideLoading()
                         view.onError(e?.localizedMessage)
                     }
 

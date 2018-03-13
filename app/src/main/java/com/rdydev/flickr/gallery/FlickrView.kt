@@ -8,4 +8,8 @@ interface FlickrView {
 
     fun onData(data: List<FlickrItem>)
 
+    fun showLoading()
+
+    fun hideLoading()
+
 }

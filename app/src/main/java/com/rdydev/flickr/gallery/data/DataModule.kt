@@ -17,7 +17,8 @@ class DataModule {
         }
 
         fun provideFlickrApi() : FlickrApi {
-            return FlickrApi(provideRetrofit())
+            val retrofit = provideRetrofit()
+            return FlickrApi(retrofit.create(FlickrContract::class.java))
         }
 
     }

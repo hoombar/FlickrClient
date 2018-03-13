@@ -9,8 +9,8 @@ class FlickrApi {
 
     val flickrContract: FlickrContract
 
-    constructor(retrofit: Retrofit) {
-        flickrContract = retrofit.create(FlickrContract::class.java)
+    constructor(contract: FlickrContract) {
+        this.flickrContract = contract
     }
 
     fun getFeed(): Single<List<FlickrItem>> {
