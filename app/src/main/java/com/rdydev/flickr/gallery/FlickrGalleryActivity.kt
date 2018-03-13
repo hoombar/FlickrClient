@@ -65,6 +65,11 @@ class FlickrGalleryActivity : Activity(), FlickrView {
                 .subscribe({ searchString -> presenter.searchTags(searchString) })
     }
 
+    /***
+     * I would quite like to use this https://kotlinlang.org/docs/tutorials/android-plugin.html
+     * but not sure if that technically means including more libraries than would be allowed.
+     * It would effectively remove the need for this block of code.
+     */
     private fun bindViews() {
         dataContainer = findViewById(R.id.flickr_data_container)
         recyclerView = findViewById(R.id.flickr_images)
